@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class AddTodoPage extends StatefulWidget {
-  const AddTodoPage({super.key});
+  final Map? todo;
+  const AddTodoPage({super.key, this.todo});
 
   @override
   State<AddTodoPage> createState() => _AddTodoPageState();
@@ -14,18 +15,33 @@ class _AddTodoPageState extends State<AddTodoPage> {
   TextEditingController titleConroller = TextEditingController();
   TextEditingController descriptionConroller = TextEditingController();
 
+  bool isEdit = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final todo = widget.todo;
+    if (todo != null) {
+      isEdit = true;
+      final title = todo['title'];
+      final description = todo['description'];
+      titleConroller.text = title;
+      descriptionConroller.text = description;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Todo'),
+        title: Text(isEdit ? 'Edit Todo' : 'Add Todo'),
       ),
       body: ListView(
         padding: EdgeInsets.all(20),
         children: [
           TextField(
             controller: titleConroller,
-            decoration: InputDecoration(hintText: 'Title'),
+            decoration: const InputDecoration(hintText: 'Title'),
           ),
           SizedBox(
             height: 20,
@@ -40,10 +56,32 @@ class _AddTodoPageState extends State<AddTodoPage> {
           SizedBox(
             height: 20,
           ),
-          ElevatedButton(onPressed: submitData, child: Text('Submit'))
+          ElevatedButton(
+              onPressed: isEdit ? updateData : submitData,
+              child: Text(isEdit ? 'Update' : 'Submit'))
         ],
       ),
     );
+  }
+
+  Future<void> updateData() async {
+    final title = titleConroller.text;
+    final desc = descriptionConroller.text;
+    final todo = widget.todo;
+    final todoId = todo?['_id'];
+    final body = {"title": title, "description": desc, "is_completed": false};
+    final url = 'https://api.nstack.in/v1/todos/${todoId}';
+    final uri = Uri.parse(url);
+    final response = await http.put(uri,
+        body: jsonEncode(body), headers: {'Content-Type': 'application/json'});
+
+    if (response.statusCode == 200) {
+      titleConroller.text = '';
+      descriptionConroller.text = '';
+      showSucessMessage('Updating Success');
+    } else {
+      showErrorMessage('Updating Failed');
+    }
   }
 
   Future<void> submitData() async {
@@ -58,7 +96,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
         body: jsonEncode(body), headers: {'Content-Type': 'application/json'});
     // Show Status Success or Fail
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       titleConroller.text = '';
       descriptionConroller.text = '';
       showSucessMessage('Creation Success');
