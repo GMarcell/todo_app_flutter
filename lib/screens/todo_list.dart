@@ -17,7 +17,6 @@ class _TodoListPageState extends State<TodoListPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchTodo();
   }
@@ -26,13 +25,10 @@ class _TodoListPageState extends State<TodoListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Todo List"),
+        title: const Text("Todo List"),
       ),
       body: Visibility(
         visible: isLoading,
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
         replacement: RefreshIndicator(
           onRefresh: fetchTodo,
           child: ListView.builder(
@@ -54,16 +50,20 @@ class _TodoListPageState extends State<TodoListPage> {
                     }
                   }, itemBuilder: (context) {
                     return [
-                      PopupMenuItem(child: Text('Edit'), value: 'edit'),
-                      PopupMenuItem(child: Text('Delete'), value: 'delete'),
+                      const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                      const PopupMenuItem(
+                          value: 'delete', child: Text('Delete')),
                     ];
                   }),
                 );
               }),
         ),
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-          onPressed: navigateToAddPage, label: Text('Add Todo')),
+          onPressed: navigateToAddPage, label: const Text('Add Todo')),
     );
   }
 
@@ -78,7 +78,7 @@ class _TodoListPageState extends State<TodoListPage> {
   }
 
   Future<void> navigateToAddPage() async {
-    final route = MaterialPageRoute(builder: (context) => AddTodoPage());
+    final route = MaterialPageRoute(builder: (context) => const AddTodoPage());
     await Navigator.push(context, route);
     setState(() {
       isLoading = true;
@@ -90,7 +90,7 @@ class _TodoListPageState extends State<TodoListPage> {
     setState(() {
       isLoading = true;
     });
-    final url = 'https://api.nstack.in/v1/todos?page=1&limit=10';
+    const url = 'https://api.nstack.in/v1/todos?page=1&limit=10';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     if (response.statusCode == 200) {
@@ -108,7 +108,7 @@ class _TodoListPageState extends State<TodoListPage> {
 
   Future<void> deleteById(id) async {
     // Delete item
-    final url = 'https://api.nstack.in/v1/todos/${id}';
+    final url = 'https://api.nstack.in/v1/todos/$id';
     final uri = Uri.parse(url);
     final response = await http.delete(uri);
     if (response.statusCode == 200) {
@@ -126,7 +126,7 @@ class _TodoListPageState extends State<TodoListPage> {
     final snackBar = SnackBar(
       content: Text(
         message,
-        style: TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white),
       ),
       backgroundColor: Colors.red,
     );

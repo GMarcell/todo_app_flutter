@@ -18,7 +18,6 @@ class _AddTodoPageState extends State<AddTodoPage> {
   bool isEdit = false;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     final todo = widget.todo;
     if (todo != null) {
@@ -37,23 +36,23 @@ class _AddTodoPageState extends State<AddTodoPage> {
         title: Text(isEdit ? 'Edit Todo' : 'Add Todo'),
       ),
       body: ListView(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         children: [
           TextField(
             controller: titleConroller,
             decoration: const InputDecoration(hintText: 'Title'),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           TextField(
             controller: descriptionConroller,
-            decoration: InputDecoration(hintText: 'Description'),
+            decoration: const InputDecoration(hintText: 'Description'),
             keyboardType: TextInputType.multiline,
             minLines: 5,
             maxLines: 8,
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           ElevatedButton(
@@ -70,7 +69,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
     final todo = widget.todo;
     final todoId = todo?['_id'];
     final body = {"title": title, "description": desc, "is_completed": false};
-    final url = 'https://api.nstack.in/v1/todos/${todoId}';
+    final url = 'https://api.nstack.in/v1/todos/$todoId';
     final uri = Uri.parse(url);
     final response = await http.put(uri,
         body: jsonEncode(body), headers: {'Content-Type': 'application/json'});
@@ -90,7 +89,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
     final desc = descriptionConroller.text;
     final body = {"title": title, "description": desc, "is_completed": false};
     // Submit To API
-    final url = 'https://api.nstack.in/v1/todos';
+    const url = 'https://api.nstack.in/v1/todos';
     final uri = Uri.parse(url);
     final response = await http.post(uri,
         body: jsonEncode(body), headers: {'Content-Type': 'application/json'});
@@ -114,7 +113,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
     final snackBar = SnackBar(
       content: Text(
         message,
-        style: TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.white),
       ),
       backgroundColor: Colors.red,
     );
